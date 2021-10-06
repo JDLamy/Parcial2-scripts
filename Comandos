@@ -1,0 +1,96 @@
+//  Comandos utilizados
+--servidorVM2
+yum install vsftpd
+yum install named (yum install bind-utils bind-libs bind-*)
+
+/etc/vsftpd/vsftpd.conf
+user_sub_token=$USER
+local_root=/home/$USER/ftp
+pasv_min_port=40000
+pasv_max_port=41000
+service vsftpd start
+
+adduser juanda
+passwd juanda
+contra1234
+
+cd /etc/vsftpd/
+vim user_list
+(juanda)
+
+mkdir -p /home/juanda/ftp/upload
+#chmod 550 /home/juanda/ftp
+#chmod 750 /home/juanda/ftp/upload
+chown -R juanda: /home/juanda/ftp
+systemctl restart vsftpd
+
+yum install openssl
+yum install mod_ssl
+ openssl req -x509 -nodes -days 365 -newkey rsa:1024  -keyout /etc/vsftpd/vsftpd.pem -out /etc/vsftpd/vsftpd.pem
+
+cd /etc/vsftpd/
+ssl_enable=YES 
+allow_anon_ssl=YES
+force_local_data_ssl=YES  
+force_local_logins_ssl=YES
+ssl_tlsv1=YES 
+ssl_sslv2=YES
+ssl_sslv3=YES
+rsa_cert_file=/etc/vsftpd/vsftpd.pem
+rsa_private_key_file=/etc/vsftpd/vsftpd.pem
+
+vim vsftpd.conf
+ssl_enable=YES 
+allow_anon_ssl=YES
+force_local_data_ssl=YES  
+force_local_logins_ssl=YES
+ssl_tlsv1=YES 
+ssl_sslv2=YES
+ssl_sslv3=YES
+rsa_cert_file=/etc/vsftpd/vsftpd.pem
+rsa_private_key_file=/etc/vsftpd/vsftpd.pem
+
+service firewalld start
+firewall-cmd --get-active-zones
+firewall-cmd --permanent --zone=public --add-port=10090-10100/tcp
+firewall-cmd --reload
+(reiniciar servicio)
+
+
+------------------------------------------------------------------------------------------------------------------
+--servidorVM3
+yum install named (yum install bind-utils bind-libs bind-*)
+vim /etc/named.conf
+cd /etc (vim named.conf)
+
+
+
+------------------------------------------------------------------------------------------------------------------
+--firewallVM1
+yum install firewalld
+
+firewall-cmd --permanent --add-port=20-21/tcp
+firewall-cmd --permanent --add-port=40000-41000/tcp
+firewall-cmd --reload
+
+service firewalld stop
+cd /etc (vim sysctl.conf)
+net.ipv4.ip_forward = 1
+sysctl -p
+
+service NetworkManager stop
+chkconfig NetworkManager off
+firewall-cmd --set-default-zone=dmz
+firewall-cmd --zone=dmz --remove-interface=eth2 --permanent
+firewall-cmd --zone=dmz --add-service=ftp --permanent
+
+firewall-cmd --zone=internal --list-all
+firewall-cmd --zone=internal --add-interface=eth2 --permanent
+firewall-cmd --reload
+firewall-cmd --zone=internal --list-all
+firewall-cmd --get-active-zones
+
+firewall-cmd --zone=dmz --add-masquerade
+firewall-cmd --zone=internal --add-masquerade
+firewall-cmd --zone="dmz" --add-forward-port=port=443:proto=tcp:toport=443:toaddr=192.168.60.4 --permanent
+firewall-cmd --zone=internal --list-all
