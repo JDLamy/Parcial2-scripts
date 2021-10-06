@@ -1,0 +1,19 @@
+$ORIGIN 60.168.192.in-addr.arpa.
+$TTL 3H
+@       IN SOA  dnsMaestro.deranprint.com. root.deranprint.com. (
+                                0      ; serial
+                                 1D      ; refresh
+                                   1H      ; retry
+                                    1W      ; expire
+                                     3H )    ; minimum
+
+; Name server's
+
+@       IN      NS      dnsMaestro.deranprint.com.
+@       IN      NS      dnsEsclavo.deranprint.com.
+@       IN      NS      firewall.deranprint.com.
+
+
+2             IN      PTR     dnsMaestro.deranprint.com.
+4             IN      PTR     dnsEsclavo.deranprint.com.
+3       IN      PTR     firewall.deranprint.com.
