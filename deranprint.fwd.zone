@@ -1,0 +1,20 @@
+$ORIGIN deranprint.com.
+$TTL 3H
+@       IN SOA  dnsMaestro.deranprint.com.     root.deranprint.com. (
+                                  0    ; serial
+                                        1D    ; refresh
+                                       1H     ; retry
+                                     1W    ; expire
+                                       3H  )  ; minimum
+
+; Name server's
+
+@       IN      NS      dnsMaestro.deranprint.com.
+@       IN      NS      dnsEsclavo.deranprint.com.
+@       IN      NS      firewall.deranprint.com.
+
+
+dnsMaestro       IN      A       209.191.60.2
+dnsEsclavo        IN      A       192.168.60.4
+firewall        IN      A       192.168.60.3
+www     IN      CNAME   servidor2
